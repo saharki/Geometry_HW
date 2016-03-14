@@ -8,70 +8,43 @@ typedef struct {
 
 typedef point_t* point_ptr_t;
 
-double ccw(point_t p1, point_t p2, point_t p3)
+double ccw(point_ptr_t p1, point_ptr_t p2, point_ptr_t p3)
 {
-	return (p2.x - p1.x)*(p3.y - p1.y) - (p2.y - p1.y)*(p3.x - p1.x);
-	/*	double m;
-	if (p1.x == p2.x)
-	{
-	if (p2.y > p1.y)
-	{
-	if (p3.x >= p2.x)
-	return 1;
-	else if (p3.x == p2.x)
-	return 0;
-	else
-	return -1;
-	}
-	else
-	{
-	if (p3.x < p2.x)
-	return 1;
-	else if (p3.x == p2.x)
-	return 0;
-	else
-	return -1;
-	}
-
-	}
-	m = (p2.y - p1.y) / (p2.x - p1.x);
-	if (m > 0)
-	{
-
-	}*/
-
-
+	return (p2->x - p1->x)*(p3->y - p1->y) - (p2->y - p1->y)*(p3->x - p1->x);
 }
 
 /* Returns a list of points on the convex hull in counter-clockwise order.
 * Note: the last point in the returned list is the same as the first one.
 */
-//void convex_hull(point_t* points, int npoints, point_ptr_t** out_hull, int* out_hullsize)
-//{
-//	point_ptr_t* hull;
-//	int i, t, k = 0;
-//
-//	hull = *out_hull;
-//
-//	/* lower hull */
-//	for (i = 0; i < npoints; ++i) {
-//		while (k >= 2 && ccw(hull[k - 2], hull[k - 1], &points[i]) <= 0) --k;
-//		hull[k++] = &points[i];
-//	}
-//
-//	/* upper hull */
-//	for (i = npoints - 2, t = k + 1; i >= 0; --i) {
-//		while (k >= t && ccw(hull[k - 2], hull[k - 1], &points[i]) <= 0) --k;
-//		hull[k++] = &points[i];
-//	}
-//
-//	*out_hull = hull;
-//	*out_hullsize = k;
-//}
+void convex_hull(point_t* points, int npoints)
+{
+	point_ptr_t* hull;
+	int i, t, k = 0;
+
+	hull = (point_ptr_t*)malloc(npoints*sizeof(point_ptr_t));
+
+	/* lower hull */
+	for (i = 0; i < npoints; ++i) {
+		while (k >= 2 && ccw(hull[k - 2], hull[k - 1], &points[i]) <= 0) --k;
+		hull[k++] = &points[i];
+	}
+
+	/* upper hull */
+	for (i = npoints - 2, t = k + 1; i >= 0; --i) {
+		while (k >= t && ccw(hull[k - 2], hull[k - 1], &points[i]) <= 0) --k;
+		hull[k++] = &points[i];
+	}
+
+	for (i = 0; i < k; i++)
+	{
+		printf("(%3.2lf,%3.2lf)->", hull[i]->x, hull[i]->y);
+	}
+	printf("\n");
+
+}
 
 void slow_convex_hull(point_t* points, int npoints)
 {
-	point_ptr_t* hull;
 	int i, t, k = 0;
 	int *edges;
 	edges = (int*)malloc(2 * npoints*(sizeof(int)));
@@ -95,7 +68,7 @@ void slow_convex_hull(point_t* points, int npoints)
 			for (int k = 0;k < npoints;k++)
 			{
 				if (i != j && k != i && k != j)
-					if (ccw(points[i], points[j], points[k])>0)
+					if (ccw(&points[i], &points[j], &points[k])>0)
 					{
 						valid_points[i][j] = 0;
 					}
@@ -110,6 +83,7 @@ void slow_convex_hull(point_t* points, int npoints)
 
 	for (int h = 0;h < m;h++)
 		printf("-%d", edges[h]);
+
 }
 
 
@@ -131,6 +105,10 @@ int main()
 	pts[2] = p3;
 	pts[3] = p4;
 
+	
+	convex_hull(pts, 4);
+	printf("\n");
 	slow_convex_hull(pts, 4);
-	//printf("%lf\n", cw(p1, p2, p3));
+	printf("\n");
+
 }
