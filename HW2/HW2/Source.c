@@ -7,7 +7,9 @@ typedef struct {
 } point_t;
 
 typedef point_t* point_ptr_t;
-
+//ניתן לקבוע האם הנקודה נמצאת משמאל לישר על ידי הדטרמיננטה של 2 הוקטורים
+//אם הדטרמיננטה חיובית, הנקודה משמאל לישר,
+//אחרת הנקודה על הישר או מימין לישר.
 double ccw(point_ptr_t p1, point_ptr_t p2, point_ptr_t p3)
 {
 	return (p2->x - p1->x)*(p3->y - p1->y) - (p2->y - p1->y)*(p3->x - p1->x);
